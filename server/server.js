@@ -4,8 +4,10 @@ const bodyParser = require("body-parser")
 require('dotenv').config()
 const dbConnect = require('./config/dbconnect')
 const initRoutes = require('./routes')
+const cookieParser = require('cookie-parser')
 
 const app = express()
+app.use(cookieParser())
 const port = process.env.port || 8888
 app.use(cors());
 app.use(express.json());
