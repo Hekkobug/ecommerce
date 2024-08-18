@@ -1,6 +1,7 @@
 const mongoose = require("mongoose"); // Erase if already required
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const { type } = require("os");
 // Declare the Schema of the Mongo model
 var userSchema = new mongoose.Schema(
   {
@@ -17,6 +18,9 @@ var userSchema = new mongoose.Schema(
       required: [true, "describe"],
       unique: true,
     },
+    avatar: {
+      type: String,
+    },
     mobile: {
       type: String,
       required: [true, "describe"],
@@ -30,11 +34,12 @@ var userSchema = new mongoose.Schema(
       type: String,
       default: "user",
     },
-    cart: {
-      type: Array,
-      default: [],
-    },
-    address: [{ type: mongoose.Types.ObjectId, ref: "Address" }],
+    cart: [{
+      product: {type: mongoose.Types.ObjectId, ref: "Product"},
+      quantity: Number,
+      color: String,
+    }],
+    address: String,
     wishlist: [{ type: mongoose.Types.ObjectId, ref: "Product" }],
     isBlocked: {
       type: Boolean,
@@ -50,6 +55,9 @@ var userSchema = new mongoose.Schema(
       type: String,
     },
     passwordResetExpires: {
+      type: String,
+    },
+    registerToken: {
       type: String,
     },
   },

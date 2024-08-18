@@ -1,0 +1,64 @@
+import React, { useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import {
+  Login,
+  Home,
+  Public,
+  Blogs,
+  Services,
+  FAQ,
+  Products,
+  DetailProduct,
+  FinalRegister,
+  ResetPassword,
+} from "./pages/public";
+import path from "./ultils/path";
+import { useDispatch, useSelector } from "react-redux";
+import { getCategories } from "./store/app/asyncAction";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { Modal } from "./components";
+
+function App() {
+  const dispatch = useDispatch();
+  const {isShowModal,modalChildren} = useSelector(state => state.app)
+  useEffect(() => {
+    dispatch(getCategories());
+  }, []);
+  return (
+    <div className="font-main relative">
+    {isShowModal && <Modal>{modalChildren}</Modal>}
+      <Routes>
+        <Route path={path.PUBLIC} element={<Public />}>
+          <Route path={path.HOME} element={<Home />} />
+          <Route path={path.BLOG} element={<Blogs />} />
+          <Route path={path.OUT_SERVICE} element={<Services />} />
+          <Route path={path.FAQ} element={<FAQ />} />
+          <Route
+            path={path.DETAIL_PRODUCT_CATEGORY_PID_TITLE}
+            element={<DetailProduct />}
+          />
+          <Route path={path.PRODUCT} element={<Products />} />
+          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
+        </Route>
+        <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
+        <Route path={path.LOGIN} element={<Login />} />
+      </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+      <ToastContainer />
+    </div>
+  );
+}
+
+export default App;
