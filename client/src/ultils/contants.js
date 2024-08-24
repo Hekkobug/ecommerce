@@ -195,3 +195,93 @@ export const voteOptions =[
     text:'Perfect'
   },
 ]
+const {LuLayoutDashboard,MdOutlineGroupAdd,TfiHarddrives,TfiClipboard,ImProfile,HiOutlineShoppingCart,GoHistory,FaHeartPulse} = icons
+export const adminSidebar =[
+  {
+    id:1,
+    type: 'SINGLE',
+    text:'Dashboard',
+    path: `/${path.ADMIN}/${path.DASHBOARD}`,
+    icon: <LuLayoutDashboard size={25} />
+  },
+  {
+    id:2,
+    type: 'SINGLE',
+    text:'Manage users',
+    path: `/${path.ADMIN}/${path.MANAGE_USER}`,
+    icon: <MdOutlineGroupAdd size={25}/>
+  },
+  {
+    id:3,
+    type: 'PARENT',
+    text:'Manage products',
+    icon: <TfiHarddrives size={25}/>,
+    submenu:[
+      {
+        text:'Create product',
+        path: `/${path.ADMIN}/${path.CREATE_PRODUCTS}`,
+      },
+      {
+        text:'Manage products',
+        path: `/${path.ADMIN}/${path.MANAGE_PRODUCTS}`,
+      },
+    ]
+  },
+  {
+    id:4,
+    type: 'SINGLE',
+    text:'Manage orders',
+    path: `/${path.ADMIN}/${path.MANAGE_ORDER}`,
+    icon: <TfiClipboard size={25}/>
+  },
+]
+export const memberSidebar =[
+  {
+    id:1,
+    type: 'SINGLE',
+    text:'Personal',
+    path: `/${path.MEMBER}/${path.PERSONAL}`,
+    icon: <ImProfile className={'text-orange-400'} size={25} />
+  },
+  {
+    id:2,
+    type: 'SINGLE',
+    text:'My cart',
+    path: `/${path.MEMBER}/${path.MY_CART}`,
+    icon: <HiOutlineShoppingCart className={'text-yellow-700'} size={25}/>
+  },
+  {
+    id:3,
+    type: 'SINGLE',
+    text:'Buy histories',
+    path: `/${path.MEMBER}/${path.HISTORY}`,
+    icon: <GoHistory className={'text-blue-600'} size={25}/>
+  },
+  {
+    id:4,
+    type: 'SINGLE',
+    text:'Wishlist',
+    path: `/${path.MEMBER}/${path.WISHLIST}`,
+    icon: <FaHeartPulse className={'text-red-500'} size={25}/>
+  },
+]
+export const roles =[
+  {
+    code: 777,
+    value:'Admin'
+  },
+  {
+    code: 111,
+    value:'User'
+  },
+]
+export const blockStatus =[
+  {
+    code: true,
+    value:'Blocked'
+  },
+  {
+    code: false,
+    value:'Active'
+  },
+]

@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect, useState } from "react";
-import InputField from "../../components/InputField";
-import Button from "../../components/Button";
 import {
   apiFinalRegister,
   apiForgotPassword,
   apiLogin,
   apiRegister,
-} from "../../apis/user";
+} from "apis/user";
 import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
-import path from "../../ultils/path";
+import path from "ultils/path";
 import { useDispatch } from "react-redux";
-import { login } from "../../store/user/userSlice";
+import { login } from "store/user/userSlice";
 import { toast } from "react-toastify";
-import { validate } from "../../ultils/helper";
+import { validate } from "ultils/helper";
+import { showModal } from "store/app/appSlice";
+import { Button, InputField, Loading } from "components";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -58,7 +58,10 @@ const Login = () => {
       : validate(data, setInvaliFields);
     if (invalids === 0) {
       if (isRegister) {
+        dispatch(showModal({isShowModal: true,modalChildren:<Loading/>}))
         const response = await apiRegister(payload);
+        dispatch(showModal({isShowModal: false,modalChildren:null}))
+
         if (response.success) {
           setIsVerifieldEmail(true);
         } else Swal.fire("Opps!", response.mes, "error");
@@ -147,7 +150,7 @@ const Login = () => {
         className="w-full h-full object-cover"
       />
       <div className="absolute top-0 bottom-0 left-0 right-1/2 flex items-center justify-center">
-        <div className="p-8 bg-pink-300 flex flex-col items-center rounded-md min-w-[500px] ">
+        <div className="p-8 bg-pink-300 opacity-90 flex flex-col items-center rounded-md min-w-[500px] ">
           <h1 className="text-[28px] font-semibold text-main mb-8">
             {isRegister ? "Register" : "Login"}
           </h1>

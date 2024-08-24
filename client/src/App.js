@@ -18,6 +18,8 @@ import { getCategories } from "./store/app/asyncAction";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { Modal } from "./components";
+import { AdminLayout, CreateProducts, Dashboad, ManageOrder, ManageProducts, ManageUser } from "pages/admin";
+import { History, MemberLayout, MyCart, Personal, Wishlist } from "pages/member";
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +42,20 @@ function App() {
           />
           <Route path={path.PRODUCT} element={<Products />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
+          <Route path={path.ALL} element={<Home />} />
+        </Route>
+        <Route path={path.ADMIN} element={<AdminLayout />}>
+          <Route path={path.DASHBOARD} element={<Dashboad />}/>
+          <Route path={path.MANAGE_PRODUCTS} element={<ManageProducts />}/>
+          <Route path={path.MANAGE_USER} element={<ManageUser />}/>
+          <Route path={path.MANAGE_ORDER} element={<ManageOrder />}/>
+          <Route path={path.CREATE_PRODUCTS} element={<CreateProducts />}/>
+        </Route>
+        <Route path={path.MEMBER} element={<MemberLayout />}>
+          <Route path={path.PERSONAL} element={<Personal />}/>
+          <Route path={path.MY_CART} element={<MyCart id={'cart'} />}/>
+          <Route path={path.WISHLIST} element={<Wishlist />}/>
+          <Route path={path.HISTORY} element={<History />}/>
         </Route>
         <Route path={path.FINAL_REGISTER} element={<FinalRegister />} />
         <Route path={path.LOGIN} element={<Login />} />
