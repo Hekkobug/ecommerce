@@ -18,12 +18,14 @@ const Products = () => {
   const [sort, setSort] = useState('');
   const [products, setProducts] = useState(null);
   const [activeClick, setActiveClick] = useState(null);
+  const { category } = useParams();
+
   const fetchProductsByCategory = async (queries) => {
+    if(category && category !== 'products') queries.category = category
     const response = await apiGetProducts(queries);
     if (response.success) setProducts(response);
   };
 
-  const { category } = useParams();
   useEffect(() => {
     const queries = Object.fromEntries([...params])
     let priceQuery ={}

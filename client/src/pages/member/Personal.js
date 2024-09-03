@@ -26,6 +26,7 @@ const Personal = () => {
       email: current?.email,
       mobile: current?.mobile,
       avatar: current?.avatar,
+      address: current?.address,
     });
   }, [current]);
   const handleUpdateInfor = async(data) => {
@@ -92,6 +93,15 @@ const Personal = () => {
               value: /^(03|05|07|08|09|01[2|6|8|9])\d{8}$/,
               message: "Phone Invalid",
             }
+          }}
+        />
+        <InputForm
+          label="Address"
+          register={register}
+          errors={errors}
+          id="address"
+          validate={{
+            required: "Need fill this field",
           }}
         />
         <div className="flex items-center gap-2">

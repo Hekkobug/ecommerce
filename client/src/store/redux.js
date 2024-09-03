@@ -16,7 +16,7 @@ const commomConfig = {
 }
 const userConfig = {
   ...commomConfig,
-  whitelist: ['isLoggedIn', 'token','current'],
+  whitelist: ['isLoggedIn', 'token','current','currentCart'],
 }
 
 export const store = configureStore({

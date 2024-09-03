@@ -88,7 +88,13 @@ const login = asyncHandler(async (req, res) => {
 
 const getCurrent = asyncHandler(async (req, res) => {
   const { _id } = req.user;
-  const user = await User.findById(_id).select("-refreshToken -password");
+  const user = await User.findById(_id).select("-refreshToken -password").populate({
+    path:'cart',
+    populate: {
+      path: 'product',
+      select: 'title thumb price',
+    },
+  })
   return res.status(200).json({
     success: user? true : false,
     rs: user ? user : "User not found",
@@ -247,8 +253,8 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 const updateUser = asyncHandler(async (req, res) => {
   const { _id } = req.user
-  const {firstname,lastname,email,mobile} = req.body
-  const data = {firstname,lastname,email,mobile}
+  const {firstname,lastname,email,mobile,address} = req.body
+  const data = {firstname,lastname,email,mobile,address}
   if(req.file) data.avatar = req.file.path
   if (!_id || Object.keys(req.body).length === 0) throw new Error('Missing inputs')
   const response = await User.findByIdAndUpdate(_id, data, { new: true }).select('-password -role -refreshToken')
@@ -281,32 +287,49 @@ const updateUserAddress = asyncHandler(async (req, res) => {
 })
 
 const updateCart = asyncHandler(async (req, res) => {
-  const { _id } = req.user
-  const {pid, quantity,color } = req.body
-  if (!pid || !quantity || !color) throw new Error('Missing inputs')
-  const user = await User.findById(_id)
-  const alreadyProduct = user?.cart?.find(el => el.product.toString() === pid)
-  if(alreadyProduct){
-    if(alreadyProduct.color === color){
-      const response = await User.updateOne({cart: {$elemMatch: alreadyProduct}},{$set: {"cart.$.quantity": quantity}},{new: true})
-      return res.status(200).json({
-        success: response ? true : false,
-        updatedUser: response ? response : 'Some thing went wrong'
-    })
-    }else{
-      const response = await User.findByIdAndUpdate(_id,{$push: {cart: {product: pid, quantity, color}}},{new: true})
+  const { _id } = req.user;
+  const { pid, quantity = 1, color, price, thumbnail, title } = req.body;
+  if (!pid || !color) throw new Error('Missing inputs');
+  const user = await User.findById(_id).select('cart');
+  const alreadyProduct = user?.cart?.find(el => el.product.toString() === pid && el.color === color);
+  
+  if (alreadyProduct) {
+    const response = await User.updateOne(
+      { cart: { $elemMatch: alreadyProduct } },
+      { $set: { "cart.$.quantity": quantity, "cart.$.price": price, "cart.$.thumbnail": thumbnail, "cart.$.title": title } },
+      { new: true }
+    );
     return res.status(200).json({
       success: response ? true : false,
-      updatedUser: response ? response : 'Some thing went wrong'
-  })
-    }
-  }else{
-    const response = await User.findByIdAndUpdate(_id,{$push: {cart: {product: pid, quantity, color}}},{new: true})
+      mes: response ? "'Updated your cart!'" : 'Something went wrong',
+    });
+  } else {
+    const response = await User.findByIdAndUpdate(
+      _id,
+      { $push: { cart: { product: pid, quantity, color, price, thumbnail, title } } },
+      { new: true }
+    );
     return res.status(200).json({
       success: response ? true : false,
-      updatedUser: response ? response : 'Some thing went wrong'
-  })
+      mes: response ? "'Updated your cart!'" : 'Something went wrong',
+    });
   }
+});
+
+const removeProductInCart = asyncHandler(async (req, res) => {
+  const { _id } = req.user
+  const {pid,color} = req.params
+  const user = await User.findById(_id).select('cart')
+  const alreadyProduct = user?.cart?.find(el => el.product.toString() === pid && el.color === color)
+  if(!alreadyProduct) return res.status(200).json({
+    success:  true ,
+    mes: 'Updated your cart!'
+})
+const response = await User.findByIdAndUpdate(_id,{$pull: {cart: {product: pid,color}}},{new: true})
+    return res.status(200).json({
+      success: response ? true : false,
+      mes: response ? 'Updated your cart!' : 'Some thing went wrong'
+  })
 })
 
 module.exports = {
@@ -324,4 +347,5 @@ module.exports = {
   deleteUser,
   getCurrent,
   updateCart,
+  removeProductInCart,
 };
