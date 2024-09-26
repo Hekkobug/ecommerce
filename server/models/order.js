@@ -21,6 +21,8 @@ var orderSchema = new mongoose.Schema({
         ref:'User',
         
     },
+},{
+    timestamps: true, 
 });
 
 //Export the model

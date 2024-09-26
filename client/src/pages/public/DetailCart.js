@@ -30,6 +30,7 @@ const DetailCart = ({ location, navigate }) => {
       });
     else window.open(`/${path.CHECKOUT}`, "_blank");
   };
+  console.log(currentCart)
 
   return (
     <div className="w-full">

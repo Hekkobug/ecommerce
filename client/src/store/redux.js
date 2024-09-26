@@ -11,18 +11,23 @@ import { persistReducer, persistStore,FLUSH,
 import userSlice from './user/userSlice';
 
 const commomConfig = {
-  key: 'shop/user',
   storage,
 }
 const userConfig = {
   ...commomConfig,
   whitelist: ['isLoggedIn', 'token','current','currentCart'],
+  key:"shop/user"
+}
+const productConfig = {
+  ...commomConfig,
+  whitelist: ['dealDaily'],
+  key:"shop/deal"
 }
 
 export const store = configureStore({
   reducer: {
     app: appSlice,
-    products: productSlice,
+    products: persistReducer(productConfig,productSlice),
     user: persistReducer(userConfig,userSlice),
   },
   middleware: (getDefaultMiddleware) =>

@@ -21,10 +21,9 @@ const FutureProducts = () => {
         {products?.map((el) => (
           <ProductCard
             key={el._id}
+            pid={el._id}
             image={el.thumb}
-            title={el.title}
-            totalRatings={el.totalRatings}
-            price={el.price}
+            {...el}
           />
         ))}
       </div>

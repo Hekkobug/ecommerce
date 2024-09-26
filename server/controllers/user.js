@@ -92,9 +92,9 @@ const getCurrent = asyncHandler(async (req, res) => {
     path:'cart',
     populate: {
       path: 'product',
-      select: 'title thumb price',
+      select: 'title thumb price quantity',
     },
-  })
+  }).populate("wishlist","title thumb price color")
   return res.status(200).json({
     success: user? true : false,
     rs: user ? user : "User not found",
@@ -149,12 +149,7 @@ const logout = asyncHandler(async (req, res) => {
     mes: "Logout in done",
   });
 });
-// Client gửi email
-// Server check email có hợp lệ hay không => Gửi mail + kèm theo link (password change token)
-// Client check mail => click link
-// Client gửi api kèm token
-// Check token có giống với token mà server gửi mail hay không
-// Change password
+
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
   if (!email) throw new Error("Missing email");
@@ -332,6 +327,34 @@ const response = await User.findByIdAndUpdate(_id,{$pull: {cart: {product: pid,c
   })
 })
 
+const updateWishlist = asyncHandler(async (req, res) => {
+  const { pid } = req.params
+  const {_id} = req.user
+  const user = await User.findById(_id)
+  const alreadyWishlist = user.wishlist?.find(el => el.toString() === pid)
+  if(alreadyWishlist){
+    const response = await User.findByIdAndUpdate(
+      _id,
+      { $pull: { wishlist: pid } },
+      { new: true }
+    );
+    return res.json({
+      success: response ? true : false,
+      mes: response? "Update your wishlist." : "Failed to update wishlist!",
+    });
+  }else{
+    const response = await User.findByIdAndUpdate(
+      _id,
+      { $push: { wishlist: pid } },
+      { new: true }
+    );
+    return res.json({
+      success: response ? true : false,
+      mes: response? "Update your wishlist." : "Failed to update wishlist!",
+    });
+  }
+})
+
 module.exports = {
   register,
   finalRegister,
@@ -348,4 +371,5 @@ module.exports = {
   getCurrent,
   updateCart,
   removeProductInCart,
+  updateWishlist,
 };

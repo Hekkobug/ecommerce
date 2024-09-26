@@ -3,7 +3,7 @@ import {
   PayPalButtons,
   usePayPalScriptReducer,
 } from "@paypal/react-paypal-js";
-import { apiCreateOrder } from "apis";
+import { apiCreateOrder, apiUpdateProductQuantities } from "apis";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -53,6 +53,7 @@ const ButtonWrapper = ({
     const response = await apiCreateOrder({ ...payload, status: "Succeed" });
     if (response.success) {
       setIsSuccess(true);
+      await apiUpdateProductQuantities(payload);
       setTimeout(() => {
         Swal.fire("Congrat!", "Order was created.", "success").then(() => {
             navigate("/")
@@ -60,6 +61,7 @@ const ButtonWrapper = ({
       },1500)
     }
   };
+  console.log(payload.products)
 
   return (
     <>

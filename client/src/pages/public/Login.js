@@ -136,11 +136,11 @@ const Login = () => {
                 name="Submit"
                 handleOnClick={handleForgotPassword}
                 style="px-4 py-2 rounded-md text-white bg-pink-500 text-semibold my-2"
-              />
+              >Submit</Button>
               <Button
                 name="Back"
                 handleOnClick={() => setIsForgotPassword(false)}
-              />
+              >Back</Button>
             </div>
           </div>
         </div>

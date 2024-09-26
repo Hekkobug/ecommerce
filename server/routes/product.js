@@ -10,6 +10,7 @@ router.post('/', [verifyAccessToken, isAdmin],uploader.fields([
 ]), ctrls.createProduct)
 router.get('/', ctrls.getProducts)
 router.put('/ratings',verifyAccessToken, ctrls.ratings)
+router.put('/update-quantities', verifyAccessToken, ctrls.apiUpdateProductQuantities);
 
 router.put('/uploadimage/:pid', [verifyAccessToken, isAdmin],uploader.array('images',10), ctrls.uploadImageProduct)
 router.put('/varriant/:pid', [verifyAccessToken, isAdmin],uploader.fields([

@@ -31,7 +31,7 @@ const ResetPassword = () => {
             name="Submit"
             handleOnClick={handleResetPassword}
             style='px-4 py-2 rounded-md text-white bg-pink-500 text-semibold my-2'
-          />
+          >Submit</Button>
       </div>
       </div>
     </div>

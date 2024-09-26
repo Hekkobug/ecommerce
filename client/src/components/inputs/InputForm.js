@@ -25,7 +25,7 @@ const InputForm = (
         {...register(id, validate)}
         disabled={disabled}
         placeholder={placeholder}
-        className={clsx("form-input my-auto text-green-600", fullWidth && "w-full",style)}
+        className={clsx("form-input my-auto text-black", fullWidth && "w-full",style)}
         defaultValue={defaultValue}
         readOnly={readOnly}
       />

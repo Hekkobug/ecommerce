@@ -158,7 +158,7 @@ const ManageUser = () => {
               {users?.users?.map((el, idx) => (
                 <tr
                   key={el.id}
-                  className="border border-pink-200 text-pink-700 bg-purple-400"
+                  className="border border-pink-200 text-white bg-purple-400"
                 >
                   <td className="py-2 px-4">{idx + 1}</td>
                   <td className="py-2 px-4">

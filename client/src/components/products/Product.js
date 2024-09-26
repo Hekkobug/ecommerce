@@ -7,7 +7,7 @@ import withBaseComponent from "hocs/withBaseComponent";
 import { showModal } from "store/app/appSlice";
 import { DetailProduct } from "pages/public";
 import { FaCartPlus } from "react-icons/fa";
-import { apiUpdateCart } from "apis";
+import { apiUpdateCart, apiUpdateWishlist } from "apis";
 import { toast } from "react-toastify";
 import { getCurrent } from "store/user/asyncAction";
 import { useSelector } from "react-redux";
@@ -15,9 +15,10 @@ import Swal from "sweetalert2";
 import path from "ultils/path";
 import { BsCartCheckFill } from "react-icons/bs";
 import { createSearchParams } from "react-router-dom";
+import clsx from "clsx";
 const { FaEye, FaHeart } = icons;
 
-const Product = ({ productData, isNew, normal, navigate, dispatch,location }) => {
+const Product = ({ productData, isNew, normal, navigate, dispatch,location,pid,className }) => {
   const [isShowOption, setIsShowOption] = useState(false);
   const { current } = useSelector((state) => state.user);
 
@@ -54,7 +55,13 @@ const Product = ({ productData, isNew, normal, navigate, dispatch,location }) =>
           dispatch(getCurrent());
         } else toast.error(response.mes);
       };
-    if (flag === "WISHLIST") console.log("WISHLIST");
+    if (flag === "WISHLIST"){
+        const response = await apiUpdateWishlist(pid)
+        if(response.success){
+          dispatch(getCurrent())
+          toast.success(response.mes)
+        } else toast.error(response.mes)
+    }
     if (flag === "QUICK_VIEW") {
       dispatch(
         showModal({
@@ -69,9 +76,8 @@ const Product = ({ productData, isNew, normal, navigate, dispatch,location }) =>
       );
     }
   };
-
   return (
-    <div className="w-full flex-auto text-base px-[10px]">
+    <div className={clsx("w-full flex-auto text-base px-[10px]",className)}>
       <div
         className="w-full border p-[15px] flex-flex-col items-center"
         onClick={() =>
@@ -91,7 +97,7 @@ const Product = ({ productData, isNew, normal, navigate, dispatch,location }) =>
                 title="Add to Wishlist"
                 onClick={(e) => handleClickOptions(e, "WISHLIST")}
               >
-                <SelectOption icon={<FaHeart color="purple" />} />
+                <SelectOption icon={<FaHeart color={current?.wishlist?.some(i => i._id === pid)? "red" : "purple"} />} />
               </span>
               {current?.cart?.some(
                 (el) => el.product === productData._id

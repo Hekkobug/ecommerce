@@ -48,6 +48,8 @@ const getProducts = asyncHandler(async (req, res) => {
     formatedQueries.title = { $regex: queries.title, $options: `i` };
   if (queries?.category)
     formatedQueries.category = { $regex: queries.category, $options: `i` };
+  if (queries?.brand)
+    formatedQueries.brand = { $regex: queries.brand, $options: `i` };
   if (queries?.color) {
     delete formatedQueries.color;
     const colorArr = queries.color?.split(",");
@@ -196,6 +198,47 @@ const addVarriant = asyncHandler(async (req, res) => {
   });
 });
 
+const apiUpdateProductQuantities = asyncHandler(async (req, res) => {
+  const { products } = req.body;
+  const updatedProducts = [];
+
+  try {
+    for (const product of products) {
+      const { product: productDetails, quantity } = product; 
+      const existingProduct = await Product.findById(productDetails._id); 
+
+      if (existingProduct) {
+        const updatedProduct = await Product.findByIdAndUpdate(
+          productDetails._id, 
+          {
+            $inc: {
+              quantity: -quantity, // Trừ đi số lượng đã đặt hàng
+              sold: quantity // Tăng số lượng đã bán
+            }
+          },
+          { new: true } // Trả về tài liệu đã cập nhật
+        );
+       updatedProducts.push(updatedProduct);
+      }
+    }
+   
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product quantities updated successfully',
+      data: updatedProducts,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+
+
 module.exports = {
   createProduct,
   getProduct,
@@ -205,4 +248,5 @@ module.exports = {
   ratings,
   uploadImageProduct,
   addVarriant,
+  apiUpdateProductQuantities
 };
