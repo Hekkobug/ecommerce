@@ -1,14 +1,32 @@
 import { Breadcrumb, Button, OrderItem } from "components";
 import withBaseComponent from "hocs/withBaseComponent";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { createSearchParams, Link } from "react-router-dom";
+import { createSearchParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { formatMoney } from "ultils/helper";
 import path from "ultils/path";
 
 const DetailCart = ({ location, navigate }) => {
   const { currentCart, current } = useSelector((state) => state.user);
+  const [isCheckoutDisabled, setIsCheckoutDisabled] = useState(false);
+  console.log(isCheckoutDisabled)
+
+  // Kiểm tra nếu số lượng giỏ hàng vượt quá số lượng trong kho
+  useEffect(() => {
+    const hasExceedingQuantity = currentCart?.some(
+      (item) => item.quantity > item.product.quantity
+    );
+    if (hasExceedingQuantity) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "One or more items in your cart exceed the available stock.",
+      });
+    }
+    setIsCheckoutDisabled(hasExceedingQuantity);
+  }, [currentCart]);
+
   const handleSubmit = () => {
     if (!current?.address)
       return Swal.fire({
@@ -30,7 +48,6 @@ const DetailCart = ({ location, navigate }) => {
       });
     else window.open(`/${path.CHECKOUT}`, "_blank");
   };
-  console.log(currentCart)
 
   return (
     <div className="w-full">
@@ -67,7 +84,9 @@ const DetailCart = ({ location, navigate }) => {
         <span className="text-xs italic">
           Shipping, taxes, and discounts calculated at checkout.
         </span>
-        <Button handleOnClick={handleSubmit}>Checkout</Button>
+        <Button handleOnClick={handleSubmit} disabled={isCheckoutDisabled}>
+          Checkout
+        </Button>
       </div>
     </div>
   );
